@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="myLinkedInConnections" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>My LinkedIn Connections</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+
+	// This code is inspired by a tutorial from Google Maps:
+    //https://developers.google.com/maps/documentation/javascript/examples/icon-complex
+	function initMap() {
+	  var map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 3,
+		// To get as many markers as possible
+		center: {lat: 27.8872, lng: 18.0913}
+	  });
+	  // All markers but mine
+	  setMarkerRomain(map);
+	  // My marker
+	  setMarkers(map);
+	}
+
+	// Data for the markers consisting of a location with number of connections, a Lat and a Lng
+	
+	// Hard list to let you run the code easily
+	var connections = [
+		['Abu Dhabi (United Arab Emirates) - 2 connection(s)', 24.466, 54.366],
+		['Amiens (France) - 1 connection(s)', 49.8947, 2.2933],
+		['Amsterdam (Netherlands) - 2 connection(s)', 52.374, 4.889],
+		['Annecy (France) - 1 connection(s)', 45.899, 6.1287],
+		['Bangkok (Thailand) - 1 connection(s)', 13.75, 100.516],
+		['Beaune (France) - 1 connection(s)', 47.0192, 4.8355],
+		['Berlin (Germany) - 2 connection(s)', 52.5161, 13.377],
+		['Blois (France) - 1 connection(s)', 47.5869, 1.3313],
+		['Bordeaux (France) - 2 connection(s)', 44.8366, -0.581],
+		['Bourges (France) - 1 connection(s)', 47.086, 2.3931],
+		['Cairo (Egypt) - 1 connection(s)', 30.062, 31.249],
+		['Chisinau (Moldova) - 1 connection(s)', 47.005, 28.857],
+		['Dartmouth (UK) - 1 connection(s)', 50.3522, -3.5794],
+		['Denver (USA) - 1 connection(s)', 39.7392, -104.9903],
+		['Geneva (Switzerland) - 7 connection(s)', 46.2083, 6.1428],
+		['Grenoble (France) - 2 connection(s)', 45.194, 5.732],
+		['Guangzhou (China) - 1 connection(s)', 23.116, 113.25],
+		['Hanoi (Vietnam) - 1 connection(s)', 21.024, 105.841],
+		['Hong Kong (Hong Kong) - 66 connection(s)', 22.285, 114.157],
+		['Kampala (Uganda) - 1 connection(s)', 0.316, 32.582],
+		['Kuala Lumpur (Malaysia) - 1 connection(s)', 3.141, 101.686],
+		['Kyoto (Japan) - 1 connection(s)', 35.021, 135.753],
+		['Lausanne (Switzerland) - 4 connection(s)', 46.5196, 6.6322],
+		['Le Havre (France) - 1 connection(s)', 49.4936, 0.101],
+		['Leeds (UK) - 1 connection(s)', 53.7948, -1.5465],
+		['Libreville (Gabon) - 1 connection(s)', 0.383, 9.45],
+		['Lille (France) - 2 connection(s)', 50.6372, 3.0628],
+		['Lisbon (Portugal) - 1 connection(s)', 38.7257, -9.1502],
+		['Ljubljana (Slovenia) - 1 connection(s)', 46.051, 14.505],
+		['London (UK) - 28 connection(s)', 51.5064, -0.1272],
+		['Lyon (France) - 2 connection(s)', 45.7594, 4.829],
+		['Madrid (Spain) - 70 connection(s)', 40.4203, -3.7058],
+		['Malmo (Sweden) - 1 connection(s)', 55.605, 13],
+		['Manchester (UK) - 1 connection(s)', 53.4796, -2.2487],
+		['Melbourne (Australia) - 1 connection(s)', -37.814, 144.963],
+		['Mexico (Mexico) - 1 connection(s)', 19.4285, -99.1277],
+		['Montreal (Canada) - 1 connection(s)', 45.508, -73.587],
+		['Moscow (Russia) - 1 connection(s)', 55.752, 37.615],
+		['Mountain View (USA) - 1 connection(s)', 37.3861, 122.0839],
+		['Munich (Germany) - 1 connection(s)', 48.1364, 11.5775],
+		['New York (USA) - 4 connection(s)', 40.7146, -74.0071],
+		['Nice (France) - 4 connection(s)', 43.7003, 7.2777],
+		['Orleans (France) - 1 connection(s)', 47.9014, 1.905],
+		['Paris (France) - 157 connection(s)', 48.8569, 2.3412],
+		['Reading (UK) - 2 connection(s)', 51.4535, -0.963],
+		['Redwood City (USA) - 1 connection(s)', 37.4845, -122.2277],
+		['Rennes (France) - 2 connection(s)', 48.1077, -1.6845],
+		['Rio de Janeiro (Brazil) - 1 connection(s)', -22.902, -43.207],
+		['Salisbury (UK) - 1 connection(s)', 51.0695, -1.8003],
+		['San Francisco (USA) - 5 connection(s)', 37.7771, -122.4196],
+		['Seoul (South Korea) - 1 connection(s)', 37.568, 126.977],
+		['Shanghai (China) - 4 connection(s)', 31.222, 121.458],
+		['Singapore (Singapore) - 8 connection(s)', 1.289, 103.85],
+		['Slough (UK) - 11 connection(s)', 51.508, -0.5963],
+		['Stockholm (Sweden) - 1 connection(s)', 59.332, 18.064],
+		['Strasbourg (France) - 1 connection(s)', 48.5851, 7.7364],
+		['Stuttgart (Germany) - 2 connection(s)', 48.7677, 9.1719],
+		['Sydney (Australia) - 1 connection(s)', -33.867, 151.207],
+		['Toulouse (France) - 4 connection(s)', 43.6057, 1.4487],
+		['Vancouver (Canada) - 1 connection(s)', 49.249, -123.119],
+		['Warsaw (Poland) - 1 connection(s)', 52.229, 21.011],
+		['Zagreb (Croatia) - 1 connection(s)', 45.814, 15.977],
+		['Zurich (Switzerland) - 1 connection(s)', 47.3771, 8.5396],
+		['Jerusalem (Israel) - 1 connection(s)', 31.776, 35.234],
+		['Utrecht (Netherlands) - 1 connection(s)', 52.09, 5.122],
+	];
+	// My own bespoke marker function
+    function setMarkerRomain(map) {
+		var image = {
+		  url: "https://image.spreadshirtmedia.com/image-server/v1/mp/designs/12249668,width=178,height=178/i-am-here-google-maps.png",
+		  scaledSize: new google.maps.Size(88, 88), // scaled size   
+		};
+        var marker = new google.maps.Marker({
+          position: {lat: 22.285, lng: 114.157},
+          map: map,
+          icon: image,
+          title: 'Hong Kong (Hong Kong)',
+        });
+	}
+	// Other markers
+	function setMarkers(map) {
+	  // Adds markers to the map.
+	  // Marker sizes are expressed as a Size of X,Y where the origin of the image
+	  // (0,0) is located in the top left of the image.
+	  for (var i = 0; i < connections.length; i++) {
+		var lien = connections[i];
+		var marker = new google.maps.Marker({
+		  position: {lat: lien[1], lng: lien[2]},
+		  map: map,
+		  title: lien[0],
+		});
+	  }
+	}
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing&key=&key=AIzaSyAr6p5zm3ECUO8T2ypE99wCnyZP04PZngI&v=3&callback=initMap">
+    </script>
+  </body>
+</html>
